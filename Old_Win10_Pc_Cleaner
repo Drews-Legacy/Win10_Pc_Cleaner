@@ -1,0 +1,39 @@
+"Old windows pc cleaner"
+::Notes/Notices
+	::Not my fault if you damage anything using this progarm!!!!
+	
+::Hide background info
+	@echo off
+::Owner of Batch file
+	echo Made by Drews Legacy
+	
+::Set Variables
+	::Variables table: TB = Top Border, MB = Module Border, BB = Bottom Border, TC = Task Completed
+	set TB=vvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+	set MB=############################################################
+	set BB=______________________________
+	set TC=Task Completed!
+	
+::Start
+	start /b cmd.exe /K
+	
+::Restore point
+	echo %MB% && echo. && echo Creating a restore point... (Step 1 out of 6) && echo %TB%  && wmic.exe /Namespace:\\root\default Path SystemRestore Call CreateRestorePoint "Quick use Ctrl+Z", 100, 7 && echo %BB% && echo %TC% && echo. && echo %MB% && echo.
+	
+::Opimize drive
+	echo Opimizing Main HDD/SDD... (Step 2 out of 6) && echo %TB% && defrag C: /O && echo %BB% && echo %TC% && echo. && echo %MB% && echo.
+	
+:: SFC (System File Checker)
+	echo Checking System Files (Step 3 out of 6) && echo %TB% && sfc /scannow && echo %BB% && echo %TC% && echo. && echo %MB% && echo.
+
+::Dism.exe (Check the ISO)
+	echo Comparing Operating System vs Online Microsoft Servers (Step 4 out of 6) && echo %TB% && Dism.exe /online /cleanup-image /restorehealth && echo %BB% && echo %TC% && echo. && echo %MB% && echo.
+	
+::Deleting temporary System Files
+	echo Cleaning up Temporary System Files... (Step 5 out of 6) && echo %TB% && del %temp%\*.* /s /q && echo %BB% && echo %TC% && echo. && echo %MB% && echo.
+		
+:: Deleting temporary App Files
+	echo Cleaning up Temporary Application Files... (Step 6 out of 6) && echo %TB% && del C:\Windows\prefetch\*.*/s/q && echo %BB% && echo %TC% && echo. && echo %MB% && echo.
+
+::Pause before exit
+	echo All steps ran, Please close window to Exit.
