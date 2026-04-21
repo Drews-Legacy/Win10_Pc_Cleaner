@@ -1,0 +1,135 @@
+"Windows 10 pc cleaner"
+::Notes/Notices
+	::Not my fault if you damage anything using this progarm!!!!
+	
+::Hide background info
+	@echo off
+::Owner of Batch file
+	echo Made by Drews Legacy
+	echo Version 1.0.1
+	echo I am not held accountable for any damage/errors/loss when this program is ran.
+::=================================================================================	
+::Set Main Variables
+	::Variables table: TB = Top Border, MB = Module Border, BB = Bottom Border, TC = Task Completed
+	set TB=vvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+	set MB=############################################################
+	set BB=______________________________
+	set TC=Task Completed!
+	
+::=================================================================================	
+::Start
+	start /b cmd.exe /K
+	
+::=================================================================================	
+::Restore point
+	::Top Outline and User info
+		echo %MB% && echo. && echo Creating a restore point... (Step 1 out of 9) && echo %TB%
+	::Command to run
+		wmic.exe /Namespace:\\root\default Path SystemRestore Call CreateRestorePoint "Quick use Ctrl+Z", 100, 7
+	::Bottom Outline
+		echo %BB% && echo %TC% && echo. && echo %MB% && echo.
+
+::=================================================================================	
+::Opimize drive C:
+	::Top Outline and User info
+		echo Opimizing Main HDD/SDD... (Step 2 out of 9) && echo %TB%
+	::Command to run
+		defrag C: /a /o /h
+	::Bottom Outline
+		echo %BB% && echo %TC% && echo. && echo %MB% && echo.
+		
+::=================================================================================	
+:: SFC (System File Checker)
+	::Top Outline and User info
+		echo Checking System Files, if passed skip Step 4 (Step 3 out of 9) && echo %TB%
+	::Command to run
+		sfc /scannow
+	::Bottom Outline
+		echo %BB% && echo %TC% && echo. && echo %MB% && echo.
+
+	If %ErrorLevel% == 0 (goto :Skip_DISM) ELSE goto :SFC_END
+	:SFC_END
+	::Dism.exe (Check the ISO)
+		::Top Outline and User info
+			echo SFC Failed Thus Comparing Operating System vs Online Microsoft Servers (Step 4 out of 9) && echo %TB%
+		::Command to run
+			Dism.exe /online /cleanup-image /restorehealth
+		::Bottom Outline
+			echo %BB% && echo %TC% && echo. && echo %MB% && echo.
+	:Skip_DISM
+
+::=================================================================================
+::Deleting temporary System Files
+	::Top Outline and User info
+		echo Cleaning up Temporary System Files... (Step 5 out of 9) && echo %TB%
+	::Command to run
+		del %temp%\*.* /s /q
+	::Bottom Outline
+		echo %BB% && echo %TC% && echo. && echo %MB% && echo.
+
+::=================================================================================		
+:: Deleting temporary App Files
+	::Top Outline and User info
+		echo Cleaning up Temporary Application Files... (Step 6 out of 9) && echo %TB%
+	::Command to run
+		del C:\Windows\prefetch\*.*/s/q
+	::Bottom Outline
+		echo %BB% && echo %TC% && echo. && echo %MB% && echo.
+
+::=================================================================================
+::Opimize drive All Drives
+	::Top Outline and User info
+		echo Opimizing all HDD/SDD... (Step 7 out of 9) && echo %TB%
+	::Command to run
+		defrag /c /a /o /h
+	::Bottom Outline
+		echo %BB% && echo %TC% && echo. && echo %MB% && echo.
+
+::=================================================================================
+::Rebuilding Search Index
+	::Top Outline and User info
+		echo Rebuilding Search Index... (Step 8 out of 9) && echo %TB%
+	::Set Temp Variables/Defined for human
+		::IStopLC = Index_Stop_Loop_Count
+			::IStartLC  = Index_Start_Loop_Count
+			::IStartLE  = Index_Start_Loop_End
+		::IStopLE = Index_Stop_Loop_End
+	::Commands to run
+	set IStopLC=5
+	set /a IStopLC=%IStopLC%-1
+	If %IStopLC%==0 goto :IStopLE
+		:Stop_Wsearch
+		net stop wsearch
+			If %ERRORLEVEL%==0 goto :Stop_Wsearch
+			echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			echo Cleaning out old database
+			echo.
+			REG ADD "HKLM\SOFTWARE\Microsoft\Windows\Windows Search" /v SetupCompletedSuccessfully /t REG_DWORD /d 0 /f
+			del "%ProgramData%\Microsoft\Search\Data\Applications\Windows\Windows.edb"
+			echo.
+			echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			echo Restarting Search index to rebuilding the database...
+			echo.
+			:loop
+				set IStartLC=5
+				set /a IStartLC=%IStartLC%-1
+				If %IStartLC%==0 goto :IStartLE
+					:wsearch_restart
+					net start wsearch
+					IF NOT %ERRORLEVEL%==0 (goto :wsearch_restart) ELSE goto :END
+			:IStartLE
+		:IStopLE
+	:END
+
+::=================================================================================
+::Restore point
+	::Top Outline and User info
+		echo %MB% && echo. && echo Creating a Final Backup restore point... (Step 9 out of 9) && echo %TB%
+	::Command to run
+		wmic.exe /Namespace:\\root\default Path SystemRestore Call CreateRestorePoint "This is Plan B...", 100, 7
+	::Bottom Outline
+		echo %BB% && echo %TC% && echo. && echo %MB% && echo.
+
+::=================================================================================
+::Pause before exit
+	echo All steps ran, Please close window to Exit.
