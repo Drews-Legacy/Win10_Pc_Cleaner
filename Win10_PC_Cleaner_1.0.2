@@ -6,7 +6,7 @@
 	@echo off
 ::Owner of Batch file
 	echo Made by Drews Legacy
-	echo Version 1.0.1
+	echo Version 1.0.2
 	echo I am not held accountable for any damage/errors/loss when this program is ran.
 ::=================================================================================	
 ::Set Main Variables
@@ -23,7 +23,7 @@
 ::=================================================================================	
 ::Restore point
 	::Top Outline and User info
-		echo %MB% && echo. && echo Creating a restore point... (Step 1 out of 9) && echo %TB%
+		echo %MB% && echo. && echo Creating a restore point... (Step 1 out of 10) && echo %TB%
 	::Command to run
 		wmic.exe /Namespace:\\root\default Path SystemRestore Call CreateRestorePoint "Quick use Ctrl+Z", 100, 7
 	::Bottom Outline
@@ -32,7 +32,7 @@
 ::=================================================================================	
 ::Opimize drive C:
 	::Top Outline and User info
-		echo Opimizing Main HDD/SDD... (Step 2 out of 9) && echo %TB%
+		echo Opimizing Main HDD/SDD... (Step 2 out of 10) && echo %TB%
 	::Command to run
 		defrag C: /a /o /h
 	::Bottom Outline
@@ -41,7 +41,7 @@
 ::=================================================================================	
 :: SFC (System File Checker)
 	::Top Outline and User info
-		echo Checking System Files, if passed skip Step 4 (Step 3 out of 9) && echo %TB%
+		echo Checking System Files, if passed skip Step 4 (Step 3 out of 10) && echo %TB%
 	::Command to run
 		sfc /scannow
 	::Bottom Outline
@@ -51,7 +51,7 @@
 	:SFC_END
 	::Dism.exe (Check the ISO)
 		::Top Outline and User info
-			echo SFC Failed Thus Comparing Operating System vs Online Microsoft Servers (Step 4 out of 9) && echo %TB%
+			echo SFC Failed Thus Comparing Operating System vs Online Microsoft Servers (Step 4 out of 10) && echo %TB%
 		::Command to run
 			Dism.exe /online /cleanup-image /restorehealth
 		::Bottom Outline
@@ -61,7 +61,7 @@
 ::=================================================================================
 ::Deleting temporary System Files
 	::Top Outline and User info
-		echo Cleaning up Temporary System Files... (Step 5 out of 9) && echo %TB%
+		echo Cleaning up Temporary System Files... (Step 5 out of 10) && echo %TB%
 	::Command to run
 		del %temp%\*.* /s /q
 	::Bottom Outline
@@ -70,7 +70,7 @@
 ::=================================================================================		
 :: Deleting temporary App Files
 	::Top Outline and User info
-		echo Cleaning up Temporary Application Files... (Step 6 out of 9) && echo %TB%
+		echo Cleaning up Temporary Application Files... (Step 6 out of 10) && echo %TB%
 	::Command to run
 		del C:\Windows\prefetch\*.*/s/q
 	::Bottom Outline
@@ -79,16 +79,25 @@
 ::=================================================================================
 ::Opimize drive All Drives
 	::Top Outline and User info
-		echo Opimizing all HDD/SDD... (Step 7 out of 9) && echo %TB%
+		echo Opimizing all HDD/SDD... (Step 7 out of 10) && echo %TB%
 	::Command to run
 		defrag /c /a /o /h
 	::Bottom Outline
 		echo %BB% && echo %TC% && echo. && echo %MB% && echo.
 
 ::=================================================================================
+::Error Checking All Drives
+	::Top Outline and User info
+		echo Scheduling Error Checking on Main HDD/SDD after Reboot... (Step 8 out of 10) && echo %TB%
+	::Command to run
+		echo Y | chkdsk C: /F
+	::Bottom Outline
+		echo %BB% && echo %TC% && echo. && echo %MB% && echo.
+
+::=================================================================================
 ::Rebuilding Search Index
 	::Top Outline and User info
-		echo Rebuilding Search Index... (Step 8 out of 9) && echo %TB%
+		echo Rebuilding Search Index... (Step 9 out of 10) && echo %TB%
 	::Set Temp Variables/Defined for human
 		::IStopLC = Index_Stop_Loop_Count
 			::IStartLC  = Index_Start_Loop_Count
@@ -124,7 +133,7 @@
 ::=================================================================================
 ::Restore point
 	::Top Outline and User info
-		echo %MB% && echo. && echo Creating a Final Backup restore point... (Step 9 out of 9) && echo %TB%
+		echo %MB% && echo. && echo Creating a Final Backup restore point... (Step 10 out of 10) && echo %TB%
 	::Command to run
 		wmic.exe /Namespace:\\root\default Path SystemRestore Call CreateRestorePoint "This is Plan B...", 100, 7
 	::Bottom Outline
